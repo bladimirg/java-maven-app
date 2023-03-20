@@ -3,7 +3,7 @@
 pipeline {
     agent any
     parameters {
-        string(name:'VERSION', defaultValue:'',description:'Version Prod')
+        choice(name:'VERSION', choices:['1.0.1','1.2.0'],description:'Version Prod')
     }
     stages {
         stage('build') {
