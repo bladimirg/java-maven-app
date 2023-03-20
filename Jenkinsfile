@@ -2,7 +2,7 @@
   
 pipeline {
     agent any
-    paramters {
+    parameters {
         string(name:'VERSION', defaultValue:'',description:'Version Prod')
     }
     stages {
