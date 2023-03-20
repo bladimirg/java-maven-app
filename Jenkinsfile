@@ -10,6 +10,7 @@ pipeline {
             steps {
                 script {
                     gv = load "script.groovy"
+                   
                 }
             }
         }
@@ -23,7 +24,7 @@ pipeline {
         stage('deploy') {
             steps {
                 script {
-                    echo "Deploying the application..."
+                    gv.deployApp()
                     echo "deploying version ${params.VERSION}"
                 }
             }
