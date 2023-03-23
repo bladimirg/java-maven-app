@@ -26,9 +26,9 @@ pipeline {
         stage('build image') {
             steps {
                 script {
-                    buildImage 'localhost:5000/demo-app:jma-2.0'
+                    buildImage 'localhost:5000/demo-app:jma-3.0'
                     dockerLogin()
-                    dockerPush 'localhost:5000/demo-app:jma-2.0'
+                    dockerPush 'localhost:5000/demo-app:jma-3.0'
                 }
             }
         }
