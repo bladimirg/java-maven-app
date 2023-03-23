@@ -3,8 +3,8 @@
 def gv
 pipeline {
     agent any
-    parameters {
-        choice(name:'VERSION', choices:['1.0.1','1.2.0'],description:'Version Prod')
+    tools {
+        maven 'Maven'
     }
     stages {
  
@@ -18,7 +18,7 @@ pipeline {
         stage('build jar') {
             steps {
                 script {
-                   buildJar()
+                   buildJar
                    
                 }
             }
@@ -26,7 +26,9 @@ pipeline {
         stage('build image') {
             steps {
                 script {
-                    buildImage()
+                    buildImage 'localhost:5000/demo-app:jma-2.0'
+                    dockerLogin()
+                    dockerPush 'localhost:5000/demo-app:jma-2.0'
                 }
             }
         }
@@ -34,7 +36,6 @@ pipeline {
             steps {
                 script {
                     gv.deployApp()
-                    echo "deploying version ${params.VERSION}"
                 }
             }
         }
