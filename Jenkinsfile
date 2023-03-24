@@ -6,6 +6,11 @@ pipeline {
     tools {
         maven 'Maven'
     }
+        environment {
+        ECR_REPO_URL = 'localhost:5000'
+        IMAGE_REPO = "${ECR_REPO_URL}/java-maven-app"
+    }
+
     stages {
          stage('increment version') {
             steps {
@@ -40,9 +45,9 @@ pipeline {
         stage('build image') {
             steps {
                 script {
-                    buildImage "localhost:5000/${IMAGE_REPO}:${IMAGE_NAME}"
+                    buildImage "${IMAGE_REPO}"
                     dockerLogin()
-                    dockerPush "localhost:5000/${IMAGE_REPO}:${IMAGE_NAME}"
+                    dockerPush "${IMAGE_REPO}"
                 }
             }
         }
@@ -53,5 +58,22 @@ pipeline {
                 }
             }
         }
+
+        stage('commit version update') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'gitlab-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                        buildImage "${IMAGE_REPO}"
+                        sh 'git config user.email "jenkins@example.com"'
+                        sh 'git config user.name "Jenkins"'
+                        sh "git remote set-url origin https://${USER}:${PASS}@github.com/bladimirg/java-maven-app.git"
+                        sh 'git add .'
+                        sh 'git commit -m "ci: version bump"'
+                        sh 'git push origin HEAD:jenkins-shared-lib'
+                    }
+                }
+            }
+        }
+
     }
 }
